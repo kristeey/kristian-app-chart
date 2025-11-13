@@ -1,19 +1,19 @@
-{{- $envVars := (include "kristian-app.envVarsMerged" . | fromYaml) }}
-{{- $name := include "kristian-app.name" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $name }}-deployment-{{ .Values.env }}
+  name: {{ include "kristian-app.fullname" . }}
   labels:
-    {{- include ".Values.additionalLabels.deployment" . | nindent 4 }}
-
+    {{- include "kristian-app.deploymentLabels" . | nindent 4 }}
   annotations:
-    {{- include ".Values.additionalAnnotations.deployment" . | nindent 4 }}
+    {{- include "kristian-app.deploymentAnnotations" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.autoscaling.minReplicas | default 1 }}
+  {{- end }}
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: {{ $name }}-{{ .Values.env }}-deployment
+      {{- include "kristian-app.selectorLabels" . | nindent 6 }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -22,13 +22,17 @@ spec:
   template:
     metadata:
       labels:
-        {{- include ".Values.additionalLabels.pod" . | nindent 8 }}
+        {{- include "kristian-app.podLabels" . | nindent 8 }}
       annotations:
-        {{- include ".Values.additionalAnnotations.pod" . | nindent 8 }}
+        {{- include "kristian-app.podAnnotations" . | nindent 8 }}
     spec:
-      serviceAccountName: sa-name
+      serviceAccountName: {{ include "kristian-app.serviceAccountName" . }}
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
-        - name: ...
+        - name: {{ include "kristian-app.name" . }}
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -37,28 +41,27 @@ spec:
             capabilities:
               drop:
                 - ALL
-          image: .Values.image
+          image: {{ include "kristian-app.image" . }}
+          imagePullPolicy: IfNotPresent
           lifecycle:
-            # Gracefully shut down container
+            # Graceful shutdown: wait 5 seconds before terminating the container
             preStop:
-              sleep:
-                seconds: 5
+              # Can be updated in 1.34 of kubernetes to sleep directly
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - sleep 5
           env:
-          - name: HOST_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.hostIP
-          {{- range $name, $value := $envVars }}
-          - name: {{ $name | quote }}
-            value: {{ $value | quote }}
-          {{- end }}
-          {{- range .Values.environment.secrets }}
-          - name: {{ .nameOfEnvVar }}
-            value: {{ lower .nameInKeyVault }}@azurekeyvault
-          {{- end }}
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            {{- include "kristian-app.envVars" . | nindent 12 }}
+            {{- include "kristian-app.secretEnvVars" . | nindent 12 }}
           ports:
             - name: http
-              containerPort: {{ .Values.image.port | default 8080  }}
+              containerPort: {{ .Values.image.port | default 8080 }}
               protocol: TCP
           {{- if .Values.containers.livenessProbe.enabled }}
           livenessProbe:
@@ -95,7 +98,7 @@ spec:
           {{- end }}
           resources:
             requests:
-              memory: {{ .Values.memory | default "128Mi" }}
-              cpu: {{ .Values.cpu | default "20m" }}
+              memory: {{ .Values.resources.memory | default "128Mi" }}
+              cpu: {{ .Values.resources.cpu | default "20m" }}
             limits:
-              memory: {{ .Values.memory | default "128Mi" }}
+              memory: {{ .Values.resources.memLimitOverride | default .Values.resources.memory | default "128Mi" }}

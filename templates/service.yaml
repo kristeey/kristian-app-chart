@@ -1,14 +1,20 @@
-{{- $name := include "kristian-app.name" . }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $name }}
+  name: {{ include "kristian-app.fullname" . }}
   labels:
     {{- include "kristian-app.labels" . | nindent 4 }}
+    {{- with .Values.additionalLabels.global }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.additionalAnnotations.global }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   type: ClusterIP
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.image.port | default 8080 }}
       targetPort: http
       protocol: TCP
       name: http

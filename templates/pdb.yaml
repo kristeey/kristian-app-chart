@@ -2,22 +2,19 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ $name }}-{{ .Values.environment }}-pdb
+  name: {{ include "kristian-app.fullname" . }}
   labels:
-    {{- include "kristian-app.labels" . | nindent 4 }}
-  {{- with .Values.additionalAnnotations.podDisruptionBudget }}
+    {{- include "kristian-app.pdbLabels" . | nindent 4 }}
   annotations:
-      {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- include "kristian-app.pdbAnnotations" . | nindent 4 }}
 spec:
-# This has to be configured either with minAvailable or maxUnavailable.
-{{- if .Values.podDisruptionBudget.minAvailable }}
+  {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
-{{- end }}
-{{- if .Values.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  {{- if .Values.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
-{{- end }}
+  {{- end }}
   selector:
     matchLabels:
-      app: {{ $name }}-deployment
+      {{- include "kristian-app.selectorLabels" . | nindent 6 }}
 {{- end }}
