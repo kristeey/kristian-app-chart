@@ -1,0 +1,23 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $name }}-{{ .Values.environment }}-ingress
+  annotations:
+    external-dns.alpha.kubernetes.io/target: {{ $externalDnsTarget }}
+  labels:
+    {{- include "kristian-app.labels" . | nindent 4 }}
+    kristian-app.com/enable-dns-record: "true"
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  tls:
+    - hosts:
+      - fqdn
+      secretName: {{ $name  | replace "." "-" }}-tls-certificate
+  rules:
+    - host: fqdn
+      http:
+        paths:
+          {{- range .Values.ingress.paths }}
+          {{- end }}

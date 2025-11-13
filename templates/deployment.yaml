@@ -1,0 +1,101 @@
+{{- $envVars := (include "kristian-app.envVarsMerged" . | fromYaml) }}
+{{- $name := include "kristian-app.name" . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}-deployment-{{ .Values.env }}
+  labels:
+    {{- include ".Values.additionalLabels.deployment" . | nindent 4 }}
+
+  annotations:
+    {{- include ".Values.additionalAnnotations.deployment" . | nindent 4 }}
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: {{ $name }}-{{ .Values.env }}-deployment
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        {{- include ".Values.additionalLabels.pod" . | nindent 8 }}
+      annotations:
+        {{- include ".Values.additionalAnnotations.pod" . | nindent 8 }}
+    spec:
+      serviceAccountName: sa-name
+      containers:
+        - name: ...
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
+          image: .Values.image
+          lifecycle:
+            # Gracefully shut down container
+            preStop:
+              sleep:
+                seconds: 5
+          env:
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          {{- range $name, $value := $envVars }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- range .Values.environment.secrets }}
+          - name: {{ .nameOfEnvVar }}
+            value: {{ lower .nameInKeyVault }}@azurekeyvault
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.image.port | default 8080  }}
+              protocol: TCP
+          {{- if .Values.containers.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.containers.livenessProbe.path | default "/health" }}
+              port: {{ .Values.containers.livenessProbe.port | default "http" }}
+            initialDelaySeconds: {{ .Values.containers.livenessProbe.initialDelaySeconds | default 2 }}
+            periodSeconds: {{ .Values.containers.livenessProbe.periodSeconds | default 15 }}
+            timeoutSeconds: {{ .Values.containers.livenessProbe.timeoutSeconds | default 10 }}
+            successThreshold: {{ .Values.containers.livenessProbe.successThreshold | default 1 }}
+            failureThreshold: {{ .Values.containers.livenessProbe.failureThreshold | default 3 }}
+          {{- end }}
+          {{- if .Values.containers.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.containers.readinessProbe.path | default "/health" }}
+              port: {{ .Values.containers.readinessProbe.port | default "http" }}
+            initialDelaySeconds: {{ .Values.containers.readinessProbe.initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .Values.containers.readinessProbe.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.containers.readinessProbe.timeoutSeconds | default 5 }}
+            successThreshold: {{ .Values.containers.readinessProbe.successThreshold | default 1 }}
+            failureThreshold: {{ .Values.containers.readinessProbe.failureThreshold | default 5 }}
+          {{- end }}
+          {{- if .Values.containers.startupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.containers.startupProbe.path | default "/health" }}
+              port: {{ .Values.containers.startupProbe.port | default "http" }}
+            initialDelaySeconds: {{ .Values.containers.startupProbe.initialDelaySeconds | default 3 }}
+            periodSeconds: {{ .Values.containers.startupProbe.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.containers.startupProbe.timeoutSeconds | default 5 }}
+            successThreshold: {{ .Values.containers.startupProbe.successThreshold | default 1 }}
+            failureThreshold: {{ .Values.containers.startupProbe.failureThreshold | default 3 }}
+          {{- end }}
+          resources:
+            requests:
+              memory: {{ .Values.memory | default "128Mi" }}
+              cpu: {{ .Values.cpu | default "20m" }}
+            limits:
+              memory: {{ .Values.memory | default "128Mi" }}
