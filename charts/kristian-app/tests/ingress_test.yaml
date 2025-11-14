@@ -1,0 +1,47 @@
+# Unit tests for ingress template
+suite: test ingress
+templates:
+  - ingress.yaml
+tests:
+  - it: should not create ingress when disabled
+    set:
+      ingress.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create ingress when enabled
+    set:
+      ingress.enabled: true
+    asserts:
+      - isKind:
+          of: Ingress
+      - hasDocuments:
+          count: 1
+
+  - it: should use private ingress class by default
+    set:
+      ingress.enabled: true
+      ingress.public: false
+    asserts:
+      - equal:
+          path: spec.ingressClassName
+          value: traefik-internal
+
+  - it: should use public ingress class when configured
+    set:
+      ingress.enabled: true
+      ingress.public: true
+    asserts:
+      - equal:
+          path: spec.ingressClassName
+          value: traefik
+
+  - it: should use override ingress class when specified
+    set:
+      ingress.enabled: true
+      ingress.ingressClassOverride: "custom-class"
+    asserts:
+      - equal:
+          path: spec.ingressClassName
+          value: custom-class

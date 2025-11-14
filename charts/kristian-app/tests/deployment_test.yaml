@@ -1,0 +1,95 @@
+# Unit tests for deployment template
+suite: test deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: should create a deployment with correct name
+    set:
+      nameOverride: "my-app"
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: my-app
+
+  - it: should set correct image when tag is string
+    set:
+      image.repo: "nginx"
+      image.tag: "1.19.0"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: nginx:1.19.0
+
+  - it: should handle numeric tag like 1.0
+    set:
+      image.repo: "nginx"
+      image.tag: "1.0"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: nginx:1.0
+
+  - it: should create correct number of replicas when autoscaling disabled
+    set:
+      autoscaling.enabled: false
+      autoscaling.minReplicas: 3
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3
+
+  - it: should not set replicas when autoscaling enabled
+    set:
+      autoscaling.enabled: true
+    asserts:
+      - isNull:
+          path: spec.replicas
+
+  - it: should add custom labels
+    set:
+      additionalLabels.deployment:
+        custom-label: "test-value"
+    asserts:
+      - equal:
+          path: metadata.labels.custom-label
+          value: test-value
+
+  - it: should add custom pod labels
+    set:
+      additionalLabels.pod:
+        pod-label: "pod-value"
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels.pod-label
+          value: pod-value
+
+  - it: should use correct service account
+    set:
+      serviceAccount.create: true
+      serviceAccount.name: "custom-sa"
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: custom-sa
+
+  - it: should disable probes when configured
+    set:
+      containers.livenessProbe.enabled: false
+      containers.readinessProbe.enabled: false
+      containers.startupProbe.enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.containers[0].livenessProbe
+      - isNull:
+          path: spec.template.spec.containers[0].readinessProbe
+      - isNull:
+          path: spec.template.spec.containers[0].startupProbe
+
+  - it: should enable probes when configured
+    set:
+      containers.livenessProbe.enabled: true
+    asserts:
+      - isNotNull:
+          path: spec.template.spec.containers[0].livenessProbe

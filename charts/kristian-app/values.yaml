@@ -61,16 +61,17 @@ additionalAnnotations:
   pod: {}
 additionalLabels:
   deployment: {}
-  pod: {}
+  pod:
+    hei: hade
 
 # Container Probes
 containers:
   startupProbe:
-    enabled: false
+    enabled: true
   readinessProbe:
     enabled: false
   livenessProbe:
-    enabled: false
+    enabled: true
 
 serviceAccount:
   create: true
