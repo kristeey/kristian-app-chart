@@ -13,7 +13,7 @@ check-version-increment: true
 
 # Upgrade the chart if a release already exists  
 # Disabled initially to allow adding ci-values.yaml
-upgrade: false
+upgrade: true
 
 # Additional Helm lint arguments
 helm-extra-args: --timeout 600s
