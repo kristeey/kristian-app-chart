@@ -68,7 +68,7 @@ Create the name of the service account to use
 Build the full image name
 */}}
 {{- define "kristian-app.image" -}}
-{{- printf "%s:%s" .Values.image.repo .Values.image.tag }}
+{{- printf "%s:%s" .Values.image.repo (.Values.image.tag | toString) }}
 {{- end }}
 
 {{/*

@@ -1,0 +1,33 @@
+# Unit tests for service template
+suite: test service
+templates:
+  - service.yaml
+tests:
+  - it: should create a ClusterIP service
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.type
+          value: ClusterIP
+
+  - it: should use correct port from values
+    set:
+      image.port: 9090
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 9090
+      - equal:
+          path: spec.ports[0].targetPort
+          value: http
+
+  - it: should have correct selector labels
+    set:
+      nameOverride: "test-app"
+    asserts:
+      - equal:
+          path: spec.selector
+          value:
+            app.kubernetes.io/name: test-app
+            app.kubernetes.io/instance: RELEASE-NAME
