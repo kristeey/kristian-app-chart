@@ -1,7 +1,7 @@
 # Kristian App Helm Chart
 
 [![Release Charts](https://github.com/kristeey/kristian-app-chart/actions/workflows/release.yaml/badge.svg)](https://github.com/kristeey/kristian-app-chart/actions/workflows/release.yaml)
-[![Lint and Test Charts](https://github.com/kristeey/kristian-app-chart/actions/workflows/lint-test.yaml/badge.svg)](https://github.com/kristeey/kristian-app-chart/actions/workflows/lint-test.yaml)
+[![Lint and Test Charts](https://github.com/kristeey/kristian-app-chart/actions/workflows/lint-test.yaml/badge.svg)](https://github.com/kristeey/kristian-app-chart/actions/workflows/test.yaml)
 [![Unit Tests](https://github.com/kristeey/kristian-app-chart/actions/workflows/unittest.yaml/badge.svg)](https://github.com/kristeey/kristian-app-chart/actions/workflows/unittest.yaml)
 
 Everything you need to run an application smoothly in Kubernetes.
