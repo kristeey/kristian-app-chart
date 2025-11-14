@@ -24,3 +24,12 @@ podDisruptionBudget:
 
 serviceAccount:
   create: true
+
+# Disable probes for CI - the hello-app doesn't have a /health endpoint
+containers:
+  startupProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
+  livenessProbe:
+    enabled: false
