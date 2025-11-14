@@ -66,11 +66,11 @@ additionalLabels:
 # Container Probes
 containers:
   startupProbe:
-    enabled: false
+    enabled: true
   readinessProbe:
     enabled: false
   livenessProbe:
-    enabled: false
+    enabled: true
 
 serviceAccount:
   create: true
