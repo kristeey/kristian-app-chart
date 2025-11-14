@@ -1,7 +1,7 @@
 fullNameOverride: ""
 nameOverride: ""
 
-environment: dev # dev/stage/prod
+environment: dev  # dev/stage/prod
 
 team: "kristian-app-team"
 product: "kristian-app-product"
@@ -29,8 +29,8 @@ envVars:
 
 ingress:
   enabled: true
-  public: false # public or private ingress class.
-  enableDnsRecord: true # Create DNS record from this ingress
+  public: false  # public or private ingress class.
+  enableDnsRecord: true  # Create DNS record from this ingress
   # ingressClassOverride: "" # if set will override ingressclass defined by "public" field.
   # dnsTargetOverride:  # if set will override DNS record IP with a custom value.
   #   type: A # A/CNAME
