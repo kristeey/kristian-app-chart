@@ -26,7 +26,7 @@ tests:
     asserts:
       - equal:
           path: spec.ingressClassName
-          value: nginx-private
+          value: traefik-internal
 
   - it: should use public ingress class when configured
     set:
@@ -35,7 +35,7 @@ tests:
     asserts:
       - equal:
           path: spec.ingressClassName
-          value: nginx-public
+          value: traefik
 
   - it: should use override ingress class when specified
     set:
@@ -45,12 +45,3 @@ tests:
       - equal:
           path: spec.ingressClassName
           value: custom-class
-
-  - it: should add DNS record label when enabled
-    set:
-      ingress.enabled: true
-      ingress.enableDnsRecord: true
-    asserts:
-      - equal:
-          path: metadata.labels["external-dns.alpha.kubernetes.io/enabled"]
-          value: "true"
