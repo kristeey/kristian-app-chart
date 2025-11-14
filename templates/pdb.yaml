@@ -4,9 +4,7 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ include "kristian-app.fullname" . }}
   labels:
-    {{- include "kristian-app.pdbLabels" . | nindent 4 }}
-  annotations:
-    {{- include "kristian-app.pdbAnnotations" . | nindent 4 }}
+    {{- include "kristian-app.labels" . | nindent 4 }}
 spec:
   {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}

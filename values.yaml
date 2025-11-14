@@ -3,11 +3,9 @@ nameOverride: ""
 
 environment: dev # dev/stage/prod
 
-# instance: # if your application is running in multiple instances, eg. pm/bm/bulder/folio
-# cluster: backend  # backend/security/skybank/ent-app/pap/plattform
-# domain: mydomain.no # if you need to override the domain, otherwise it will be set to the default domain of the cluster
 team: "kristian-app-team"
 product: "kristian-app-product"
+domain: "kristian-app.com"
 
 image:
   repo: "gcr.io/google-samples/hello-app"
@@ -22,12 +20,12 @@ envVars:
     #     valueFrom:
     #       fileRef:
     #         field: spec.nodeName
-  secrets: []
-    # - envVarName: MY_ENV_VAR
-    #   keyVaultName: secret-vault
-    #   keyVaultSecret: my-super-secret
-    #   type: secret # secret/key/certificate
-    #   version: xxx # versioned secret in key vault
+  # secrets: []
+  #   # - envVarName: MY_ENV_VAR
+  #   #   keyVaultName: secret-vault
+  #   #   keyVaultSecret: my-super-secret
+  #   #   type: secret # secret/key/certificate
+  #   #   version: xxx # versioned secret in key vault
 
 ingress:
   enabled: true
@@ -51,24 +49,19 @@ autoscaling:
   enabled: true
   minReplicas: 2
   maxReplicas: 10
+  # Scaling based on CPU utilization is recommended over memory utilization
+  # in most cases as CPU is a more reliable indicator of load.
+  # Scaling is based on resource utilization metrics compared with
+  # the requested resource(s), not the limits.
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
 additionalAnnotations:
-  global: {}
   deployment: {}
   pod: {}
-  ingress: {}
-  serviceAccount: {}
-  podDisruptionBudget: {}
 additionalLabels:
-  global: {}
   deployment: {}
-  pod:
-    azure.workload.identity/use: "true"
-  ingress: {}
-  serviceAccount: {}
-  podDisruptionBudget: {}
+  pod: {}
 
 # Container Probes
 containers:

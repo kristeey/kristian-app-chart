@@ -4,13 +4,6 @@ metadata:
   name: {{ include "kristian-app.fullname" . }}
   labels:
     {{- include "kristian-app.labels" . | nindent 4 }}
-    {{- with .Values.additionalLabels.global }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  annotations:
-    {{- with .Values.additionalAnnotations.global }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
 spec:
   type: ClusterIP
   ports:

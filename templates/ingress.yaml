@@ -3,28 +3,16 @@
 {{- if .Values.ingress.ingressClassOverride -}}
   {{- $ingressClass = .Values.ingress.ingressClassOverride -}}
 {{- else if .Values.ingress.public -}}
-  {{- $ingressClass = "nginx-public" -}}
+  {{- $ingressClass = "traefik" -}}
 {{- else -}}
-  {{- $ingressClass = "nginx-private" -}}
+  {{- $ingressClass = "traefik-internal" -}}
 {{- end -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "kristian-app.fullname" . }}
   labels:
-    {{- include "kristian-app.ingressLabels" . | nindent 4 }}
-    {{- if .Values.ingress.enableDnsRecord }}
-    external-dns.alpha.kubernetes.io/enabled: "true"
-    {{- end }}
-  annotations:
-    {{- include "kristian-app.ingressAnnotations" . | nindent 4 }}
-    {{- if and .Values.ingress.enableDnsRecord .Values.ingress.dnsTargetOverride }}
-    {{- if eq .Values.ingress.dnsTargetOverride.type "A" }}
-    external-dns.alpha.kubernetes.io/target: {{ .Values.ingress.dnsTargetOverride.target | quote }}
-    {{- else if eq .Values.ingress.dnsTargetOverride.type "CNAME" }}
-    external-dns.alpha.kubernetes.io/target: {{ .Values.ingress.dnsTargetOverride.target | quote }}
-    {{- end }}
-    {{- end }}
+    {{- include "kristian-app.labels" . | nindent 4 }}
 spec:
   ingressClassName: {{ $ingressClass }}
   {{- if .Values.ingress.tls }}
@@ -39,7 +27,7 @@ spec:
   {{- end }}
   rules:
     {{- range .Values.ingress.paths }}
-    - host: {{ include "kristian-app.fullname" $ }}.{{ $.Values.domain | default "example.com" }}
+    - host: {{ include "kristian-app.fullname" $ }}.{{ include "kristian-app.domain" $ }}
       http:
         paths:
           - path: {{ .path }}

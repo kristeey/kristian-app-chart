@@ -3,9 +3,14 @@ kind: Deployment
 metadata:
   name: {{ include "kristian-app.fullname" . }}
   labels:
-    {{- include "kristian-app.deploymentLabels" . | nindent 4 }}
+    {{- include "kristian-app.labels" . | nindent 4 }}
+    {{- with .Values.additionalLabels.deployment }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.additionalAnnotations.deployment }}
   annotations:
-    {{- include "kristian-app.deploymentAnnotations" . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.autoscaling.minReplicas | default 1 }}
@@ -22,9 +27,14 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "kristian-app.podLabels" . | nindent 8 }}
+        {{- include "kristian-app.labels" . | nindent 8 }}
+        {{- with .Values.additionalLabels.deployment }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.additionalAnnotations.deployment }}
       annotations:
-        {{- include "kristian-app.podAnnotations" . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       serviceAccountName: {{ include "kristian-app.serviceAccountName" . }}
       securityContext:
@@ -57,8 +67,9 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-            {{- include "kristian-app.envVars" . | nindent 12 }}
-            {{- include "kristian-app.secretEnvVars" . | nindent 12 }}
+            {{- with .Values.envVars.variables }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.image.port | default 8080 }}
