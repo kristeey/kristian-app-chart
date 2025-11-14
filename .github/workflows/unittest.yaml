@@ -24,4 +24,4 @@ jobs:
         run: helm plugin install https://github.com/helm-unittest/helm-unittest
 
       - name: Run unit tests
-        run: helm unittest charts/kristian-app -3
+        run: helm unittest charts/kristian-app
