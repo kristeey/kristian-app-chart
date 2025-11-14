@@ -1,0 +1,19 @@
+# Configuration for chart-testing
+# See: https://github.com/helm/chart-testing/blob/main/doc/ct_lint.md
+
+# The name of the directory containing the Helm charts
+chart-dirs:
+  - charts
+
+# Validate chart version bumps
+validate-maintainers: false
+
+# Check for version bump
+check-version-increment: true
+
+# Upgrade the chart if a release already exists  
+# Disabled initially to allow adding ci-values.yaml
+upgrade: false
+
+# Additional Helm lint arguments
+helm-extra-args: --timeout 600s
