@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  kristian-app:
+  - apiVersion: v2
+    created: "2025-11-14T09:56:17.783693371Z"
+    description: Kristian App is everything you need to run an application smudly
+      in k8s.
+    digest: 6fd202fac26e28e93e393ed36f13e1b2385bef8986d55bbd987b75f28108e933
+    name: kristian-app
+    type: application
+    urls:
+    - https://github.com/kristeey/kristian-app-chart/releases/download/kristian-app-0.0.2/kristian-app-0.0.2.tgz
+    version: 0.0.2
+generated: "2025-11-14T09:56:17.783702498Z"
