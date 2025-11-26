@@ -42,7 +42,7 @@ environment: {{ .Values.environment | quote }}
 Selector labels
 */}}
 {{- define "kristian-app.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kristian-app.fullame" . }}
+app.kubernetes.io/name: {{ include "kristian-app.fullname" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
