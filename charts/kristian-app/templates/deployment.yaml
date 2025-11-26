@@ -42,7 +42,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: {{ include "kristian-app.name" . }}
+        - name: {{ include "kristian-app.fullname" . }}
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true

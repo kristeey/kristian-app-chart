@@ -11,6 +11,13 @@ image:
   repo: "gcr.io/google-samples/hello-app"
   tag: "1.0"
   port: 8080
+  autoUpdate:
+    # WILL ONLY WORK IF ARGOCD APPLICATION AND ARGOCD IMAGE UPDATER ARE IN THE SAME CLUSTER
+    enabled: false
+    updateStrategy: "digest" # digest, newest-build, alphabetical, semver
+    # Path in git repo where image tag is located.
+    updateGitPath: "" # "./apps/<my-app>/<environment>/values.yaml"
+    ArgoCDApplicationName: "" # If not set, will use release name.
 
 envVars:
   variables: []
