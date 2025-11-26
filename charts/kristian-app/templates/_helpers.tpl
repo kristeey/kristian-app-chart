@@ -1,11 +1,4 @@
 {{/*
-Expand the name of the chart.
-*/}}
-{{- define "kristian-app.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
 Create a default fully qualified app name.
 */}}
 {{- define "kristian-app.fullname" -}}
@@ -49,7 +42,7 @@ environment: {{ .Values.environment | quote }}
 Selector labels
 */}}
 {{- define "kristian-app.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kristian-app.name" . }}
+app.kubernetes.io/name: {{ include "kristian-app.fullname" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
