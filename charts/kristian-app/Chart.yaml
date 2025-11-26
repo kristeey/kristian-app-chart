@@ -2,4 +2,4 @@ apiVersion: v2
 name: kristian-app
 description: Kristian App is everything you need to run an application smudly in k8s.
 type: application
-version: 0.0.5
+version: 0.0.6

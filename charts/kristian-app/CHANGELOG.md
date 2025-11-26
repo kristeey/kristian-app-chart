@@ -1,5 +1,8 @@
 # Changelog
 
+### 0.0.6
+- update readme
+
 ### 0.0.5
 - Add `imageUpdater`
 - Add `image.autoUpdate` in values
