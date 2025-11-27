@@ -8,7 +8,7 @@ product: "kristian-app-product"
 domain: "kristian-app.com"
 
 image:
-  repo: "gcr.io/google-samples/hello-app"
+  name: "gcr.io/google-samples/hello-app"
   tag: "1.0"
   port: 8080
   pullSecrets: []
