@@ -93,3 +93,12 @@ tests:
     asserts:
       - isNotNull:
           path: spec.template.spec.containers[0].livenessProbe
+
+  - it: should set image pull secrets when provided
+    set:
+      image.pullSecrets:
+        - name: acr-secret
+    asserts:
+      - equal:
+          path: spec.template.spec.imagePullSecrets[0].name
+          value: acr-secret
