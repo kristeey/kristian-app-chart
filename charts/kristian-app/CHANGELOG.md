@@ -1,5 +1,8 @@
 # Changelog
 
+### 0.0.7
+- add option to add image pull secret
+
 ### 0.0.6
 - update readme
 

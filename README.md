@@ -83,6 +83,7 @@ helm uninstall my-app
 | `image.repo` | Image repository | `"gcr.io/google-samples/hello-app"` |
 | `image.tag` | Image tag | `"1.0"` |
 | `image.port` | Container port | `8080` |
+| `image.pullSecrets` | Image pull secrets for private registries | `[]` |
 
 ### Resource Configuration
 

@@ -11,6 +11,8 @@ image:
   repo: "gcr.io/google-samples/hello-app"
   tag: "1.0"
   port: 8080
+  pullSecrets: []
+    # - name: acr-pull-secret
   autoUpdate:
     # WILL ONLY WORK IF ARGOCD APPLICATION AND ARGOCD IMAGE UPDATER ARE IN THE SAME CLUSTER
     enabled: false
