@@ -45,7 +45,7 @@ helm repo update
 
 ```bash
 helm install my-app kristian-app/kristian-app \
-  --set image.repo=my-registry/my-app \
+  --set image.name=my-registry/my-app \
   --set image.tag=1.0.0 \
   --set team=my-team \
   --set product=my-product
@@ -80,7 +80,7 @@ helm uninstall my-app
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `image.repo` | Image repository | `"gcr.io/google-samples/hello-app"` |
+| `image.name` | Image repository name | `"gcr.io/google-samples/hello-app"` |
 | `image.tag` | Image tag | `"1.0"` |
 | `image.port` | Container port | `8080` |
 | `image.pullSecrets` | Image pull secrets for private registries | `[]` |
