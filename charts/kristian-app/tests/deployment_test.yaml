@@ -15,7 +15,7 @@ tests:
 
   - it: should set correct image when tag is string
     set:
-      image.repo: "nginx"
+      image.name: "nginx"
       image.tag: "1.19.0"
     asserts:
       - equal:
@@ -24,7 +24,7 @@ tests:
 
   - it: should handle numeric tag like 1.0
     set:
-      image.repo: "nginx"
+      image.name: "nginx"
       image.tag: "1.0"
     asserts:
       - equal:

@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.0.8
+- rename `image.repo` to image.name
+- remove `imageUpdater`
+
 ### 0.0.7
 - add option to add image pull secret
 
